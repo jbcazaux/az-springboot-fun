@@ -83,6 +83,9 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <image>
+                        <name>codoxacr.azurecr.io/${project.artifactId}</name>
+                    </image>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
@@ -90,6 +93,14 @@
                         </exclude>
                     </excludes>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build-image</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
