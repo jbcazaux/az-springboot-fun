@@ -33,5 +33,4 @@ steps:
     repository: 'az-springboot-fun'
     command: 'push'
     tags: |
-      $(Build.BuildId)
       latest
