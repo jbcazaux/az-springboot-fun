@@ -27,10 +27,11 @@ steps:
     pathToSources: 'src/main/java'
     reportDirectory: 'target/site/jacoco'
     failIfCoverageEmpty: true
-- task: Maven@3
-    displayName: Build Docker image
-    inputs:
-      mavenPomFile: 'pom.xml'
-      goals: 'spring-boot:build-image'
-      publishJUnitResults: false
-      jdkVersionOption: '1.11'
+- task: Docker@2
+  inputs:
+    containerRegistry: 'codoxAcr'
+    repository: 'az-springboot-fun'
+    command: 'push'
+    tags: |
+      $(Build.BuildId)
+      latest
