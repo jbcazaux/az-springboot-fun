@@ -10,7 +10,6 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  dockerRegistryServiceConnection: 'd1763980-54b6-42ff-9197-65689110f2c5'
   imageRepository: 'az-springboot-fun'
   containerRegistry: 'codoxacr.azurecr.io'
   dockerfilePath: 'Dockerfile'
