@@ -12,6 +12,7 @@ pool:
 variables:
   imageRepository: 'az-springboot-fun'
   containerRegistry: 'codoxacr.azurecr.io'
+  dockerRegistryServiceConnection: 'codoxAcrServiceConnection'
   dockerfilePath: 'Dockerfile'
   tag: '$(Build.BuildId)'
   vmImageName: 'ubuntu-latest'
