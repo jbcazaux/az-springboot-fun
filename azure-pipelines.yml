@@ -47,19 +47,13 @@ stages:
               pathToSources: 'src/main/java'
               reportDirectory: 'target/site/jacoco'
               failIfCoverageEmpty: true
-      - job: Build
-        condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-        displayName: 'Build and Push Docker Image'
-        pool:
-          vmImage: $(vmImageName)
-        steps:
           - task: Docker@2
-            displayName: Build and push an image to container registry
-            inputs:
-              command: buildAndPush
-              repository: $(imageRepository)
-              dockerfile: $(dockerfilePath)
-              containerRegistry: $(dockerRegistryServiceConnection)
-              tags: |
-                $(tag)
-                latest
+              displayName: Build and push an image to container registry
+              inputs:
+                command: buildAndPush
+                repository: $(imageRepository)
+                dockerfile: $(dockerfilePath)
+                containerRegistry: $(dockerRegistryServiceConnection)
+                tags: |
+                  $(tag)
+                  latest
