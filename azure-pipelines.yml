@@ -9,28 +9,57 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- task: Maven@3
-  inputs:
-    mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.11'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: 'target/surefire-reports/TEST-*.xml'
-    goals: 'package'
-- task: PublishCodeCoverageResults@1
-  inputs:
-    codeCoverageTool: 'JaCoCo'
-    summaryFileLocation: 'target/site/jacoco/jacoco.xml'
-    pathToSources: 'src/main/java'
-    reportDirectory: 'target/site/jacoco'
-    failIfCoverageEmpty: true
-- task: Docker@2
-  inputs:
-    containerRegistry: 'codoxAcr'
-    repository: 'az-springboot-fun'
-    command: 'push'
-    tags: |
-      latest
+variables:
+  dockerRegistryServiceConnection: 'd1763980-54b6-42ff-9197-65689110f2c5'
+  imageRepository: 'az-springboot-fun'
+  containerRegistry: 'codoxacr.azurecr.io'
+  dockerfilePath: 'Dockerfile'
+  tag: '$(Build.BuildId)'
+  vmImageName: 'ubuntu-latest'
+
+stages:
+  - stage: Build
+    displayName: Build and push stage
+    jobs:
+      - job: InstallAndTest
+        steps:
+          - task: Maven@3
+            inputs:
+              mavenPomFile: 'pom.xml'
+              mavenOptions: '-Xmx3072m'
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '1.11'
+              jdkArchitectureOption: 'x64'
+              publishJUnitResults: true
+              testResultsFiles: 'target/surefire-reports/TEST-*.xml'
+              goals: 'package'
+            displayName: 'package'
+          - task: PublishTestResults@2
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: 'target/surefire-reports/TEST-*.xml'
+              failTaskOnFailedTests: true
+              testRunTitle: 'Publish test results'
+          - task: PublishCodeCoverageResults@1
+            inputs:
+              codeCoverageTool: 'JaCoCo'
+              summaryFileLocation: 'target/site/jacoco/jacoco.xml'
+              pathToSources: 'src/main/java'
+              reportDirectory: 'target/site/jacoco'
+              failIfCoverageEmpty: true
+      - job: Build
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+        displayName: 'Build and Push Docker Image'
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          - task: Docker@2
+            displayName: Build and push an image to container registry
+            inputs:
+              command: buildAndPush
+              repository: $(imageRepository)
+              dockerfile: $(dockerfilePath)
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: |
+                $(tag)
+                latest
