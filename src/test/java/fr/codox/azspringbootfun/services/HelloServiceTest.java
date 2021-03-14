@@ -10,6 +10,6 @@ class HelloServiceTest {
     public void hello() {
         HelloService hs = new HelloService();
 
-        assertThat(hs.hello("something")).isEqualTo("Hello something !!");
+        assertThat(hs.hello("something")).isEqualTo("Hello something !!!");
     }
 }
