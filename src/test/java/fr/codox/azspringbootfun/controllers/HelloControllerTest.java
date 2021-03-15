@@ -32,9 +32,13 @@ class HelloControllerTest {
 
     @Test
     public void getHello() throws Exception {
-        Mockito.when(helloService.hello("world")).thenReturn("foo");
+        Mockito.when(helloService.hello("world", "myIp")).thenReturn("foo");
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/").accept(TEXT_PLAIN))
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/")
+                        .accept(TEXT_PLAIN)
+                        .header("X-Forwarded-For", "myIp")
+        )
                 .andExpect(status().isOk())
                 .andExpect(content().string(equalTo("foo")));
     }

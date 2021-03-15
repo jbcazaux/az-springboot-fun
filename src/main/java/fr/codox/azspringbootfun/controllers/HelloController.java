@@ -1,6 +1,9 @@
 package fr.codox.azspringbootfun.controllers;
 
+import java.util.Optional;
+
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.codox.azspringbootfun.configurations.MessageProperties;
@@ -18,8 +21,8 @@ public class HelloController {
     }
 
     @GetMapping
-    public String hello() {
-        return helloService.hello("world");
+    public String hello(@RequestHeader(name = "X-Forwarded-For", required = false) String ip) {
+        return helloService.hello("world", Optional.ofNullable(ip).orElse("unknown"));
     }
 
     @GetMapping("/message")
