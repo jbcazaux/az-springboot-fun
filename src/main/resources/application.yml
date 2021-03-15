@@ -1,2 +1,9 @@
 server:
     port: 80
+
+spring:
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://localhost:5432/az-fun
+    username: postgres
+    driverClassName: org.postgresql.Driver
